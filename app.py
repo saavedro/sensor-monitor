@@ -24,9 +24,9 @@ def get_measurements():
 
 @app.route('/api/v1/measurements/<int:_id>', methods=['GET'])
 def get_measurement(_id):
-    match = ( [m for m in measurements if m["id"] == _id])
+    match = db.session.query(Measurement).filter(Measurement.id == _id).first()
     if match:
-        return jsonify(match[0])
+        return jsonify(match.serialize())
     return "", 404
 
 @app.route('/api/v1/measurements', methods=['POST'])
