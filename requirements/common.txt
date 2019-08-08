@@ -1,0 +1,4 @@
+wheel
+Flask==1.0.3
+Flask-SQLAlchemy 
+Flask-Migrate

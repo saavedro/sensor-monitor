@@ -1,2 +1,5 @@
 # https://stackoverflow.com/questions/17803829/how-to-customize-a-requirements-txt-for-multiple-environments
--r requirements/prod.txt
+# Specifies only dev-specific requirements
+# But imports the common ones too
+-r common.txt
+pytest==4.6.3
