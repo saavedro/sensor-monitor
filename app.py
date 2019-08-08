@@ -18,7 +18,11 @@ from models import Measurement
 @app.route('/api/v1/measurements')
 def get_measurements():
     measurements = []
-    for measurement in Measurement.query.all():
+    query =  Measurement.query
+    if 'sensor' in request.args:
+        query = query.filter(Measurement.sensor == request.args.get('sensor'))
+
+    for measurement in query.all():
         measurements.append(measurement.serialize())
     return jsonify({'measurements': measurements})
 
