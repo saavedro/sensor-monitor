@@ -2,6 +2,7 @@ import pytest
 
 import os
 os.environ['APP_SETTINGS'] = "config.TestingConfig"
+os.environ['API_KEY'] = "ValidKey"
 
 from app import app, db, Measurement
 import flask_migrate
@@ -26,9 +27,20 @@ def test_create_measurement(test_client):
         "sensor": "test",
         "value": "10.00",
         "timestamp": "2019-06-23 12:38:01"}
-    rv = test_client.post('/api/v1/measurements', json=data)
+    headers = {"X-Api-Key": os.environ['API_KEY']}
+    rv = test_client.post('/api/v1/measurements', json=data, headers=headers)
     assert rv.status_code == 201
     assert "/api/v1/measurements/" in rv.headers['Location']
+
+def test_create_measurement_unauthorized(test_client):
+    data = {
+        "sensor": "test",
+        "value": "10.00",
+        "timestamp": "2019-06-23 12:38:01"}
+    headers = {"X-Api-Key": "not_valid_key"}
+    rv = test_client.post('/api/v1/measurements', json=data, headers=headers)
+    assert rv.status_code == 401
+    assert rv.json == {"message": "ERROR: Unauthorized or missing API key"}
 
 def test_get_single_measurement(test_client):
     data = {

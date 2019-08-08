@@ -42,6 +42,11 @@ def get_measurement(_id):
 @app.route('/api/v1/measurements', methods=['POST'])
 def create_measurement():
     request_data = request.get_json()
+    auth = request.headers.get("X-Api-Key")
+
+    # For creating measurements you need a valid API key
+    if auth != app.config["API_KEY"]:
+        return jsonify({"message": "ERROR: Unauthorized or missing API key"}), 401
 
     measurement = Measurement(
 #        "id" : _id,
