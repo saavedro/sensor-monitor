@@ -22,6 +22,12 @@ def get_measurements():
     if 'sensor' in request.args:
         query = query.filter(Measurement.sensor == request.args.get('sensor'))
 
+    if 'ts_start' in request.args:
+        query = query.filter(Measurement.timestamp >= dt.datetime.strptime(request.args.get('ts_start'), "%Y-%m-%d %H:%M:%S"))
+
+    if 'ts_end' in request.args:
+        query = query.filter(Measurement.timestamp <= dt.datetime.strptime(request.args.get('ts_end'), "%Y-%m-%d %H:%M:%S"))
+
     for measurement in query.all():
         measurements.append(measurement.serialize())
     return jsonify({'measurements': measurements})
